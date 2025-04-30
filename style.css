@@ -1,0 +1,473 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+    /* -- Geliştirilmiş Renk Paletleri (Gradientler alttan üste) -- */
+    --bg-color-earth: linear-gradient(to top, #a8e0a8, #d8f8d8); /* Yeşil Tonları */
+    --bg-color-sky: linear-gradient(to top, #a1d4e6, #e1f5fe); /* Gökyüzü Mavisi */
+    --bg-color-space-entry: linear-gradient(to top, #2c3e50, #5b7d9a 70%); /* Atmosfer Geçişi (Gri-Mavi) */
+    --bg-color-space-moon: linear-gradient(to top, #0f162d, #1a237e); /* Yakın Uzay (Derin Mavi) */
+    --bg-color-interplanetary: linear-gradient(to top, #1f1a4d, #0d123b); /* Gezegenler Arası (Morumsu Mavi) */
+    --bg-color-interstellar: linear-gradient(to top, #0b001a, #14022a); /* Yıldızlararası (Koyu Mor) */
+    --bg-color-galactic: linear-gradient(to top, #2c0b36, #000000); /* Galaktik (Derin Mor -> Siyah) */
+    --bg-color-cosmic: linear-gradient(to top, #0a0a0a, #000000); /* Kozmik (Neredeyse Siyah) */
+
+    /* -- Dinamik Renkler İçin Temel Tanımlar -- */
+    /* Açık Arka Plan İçin */
+    --text-color-light-bg: #2c3e50;
+    --accent-color-light-bg: #e67e22;
+    --milestone-color-light-bg: #27ae60;
+    --container-bg-light: rgba(255, 255, 255, 0.7);
+    --panel-bg-light: rgba(0,0,0,0.04);
+    --list-border-light: rgba(120, 120, 120, 0.2);
+
+    /* Koyu Arka Plan İçin */
+    --text-color-dark-bg: #ecf0f1;
+    --accent-color-dark-bg: #3498db;
+    --milestone-color-dark-bg: #90caf9;
+    --container-bg-dark: rgba(25, 25, 40, 0.5);
+    --panel-bg-dark: rgba(255, 255, 255, 0.08);
+    --list-border-dark: rgba(200, 200, 255, 0.3);
+
+    --paper-color: #ffffff;
+    --paper-fold-crease-color: rgba(0, 0, 0, 0.15); /* Kat izi rengi */
+    --paper-fold-line-color: rgba(0, 0, 0, 0.1); /* Aktif katlama çizgisi */
+    --paper-fold-animation-color: #e8e8e8; /* Animasyon sırasındaki renk */
+
+    /* Geçişler ve Animasyonlar */
+    --transition-speed: 1.8s; /* Arka plan/renk geçiş hızı */
+    --animation-speed: 0.4s; /* Kağıt katlama animasyon hızı (JS ile senkronize) */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    /* Başlangıç renkleri (Earth) */
+    background: var(--bg-color-earth);
+    color: var(--text-color-light-bg);
+    --current-text-color: var(--text-color-light-bg);
+    --current-accent-color: var(--accent-color-light-bg);
+    --current-milestone-color: var(--milestone-color-light-bg);
+    --current-container-bg: var(--container-bg-light);
+    --current-panel-bg: var(--panel-bg-light);
+    --current-list-border: var(--list-border-light);
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background var(--transition-speed) ease-in-out,
+                color var(--transition-speed) ease-in-out;
+    overflow-x: hidden;
+    position: relative; /* Pseudo-elementlerin konumlanması için */
+}
+
+/* --- Arka Plan Durumları ve Dinamik Renk Atamaları --- */
+body.bg-earth {
+    background: var(--bg-color-earth);
+    --current-text-color: var(--text-color-light-bg);
+    --current-accent-color: var(--accent-color-light-bg);
+    --current-milestone-color: var(--milestone-color-light-bg);
+    --current-container-bg: var(--container-bg-light);
+    --current-panel-bg: var(--panel-bg-light);
+    --current-list-border: var(--list-border-light);
+}
+body.bg-sky {
+    background: var(--bg-color-sky);
+    --current-text-color: var(--text-color-light-bg);
+    --current-accent-color: #2980b9;
+    --current-milestone-color: #1f618d;
+    --current-container-bg: var(--container-bg-light);
+    --current-panel-bg: var(--panel-bg-light);
+    --current-list-border: var(--list-border-light);
+}
+body.bg-space-entry,
+body.bg-space-moon,
+body.bg-interplanetary,
+body.bg-interstellar,
+body.bg-galactic,
+body.bg-cosmic {
+    /* Tüm uzay temaları için ortak renk ayarları */
+    --current-text-color: var(--text-color-dark-bg);
+    --current-accent-color: var(--accent-color-dark-bg);
+    --current-milestone-color: var(--milestone-color-dark-bg);
+    --current-container-bg: var(--container-bg-dark);
+    --current-panel-bg: var(--panel-bg-dark);
+    --current-list-border: var(--list-border-dark);
+}
+/* Özel uzay arka plan gradientleri */
+body.bg-space-entry { background: var(--bg-color-space-entry); }
+body.bg-space-moon { background: var(--bg-color-space-moon); }
+body.bg-interplanetary { background: var(--bg-color-interplanetary); }
+body.bg-interstellar { background: var(--bg-color-interstellar); }
+body.bg-galactic { background: var(--bg-color-galactic); }
+body.bg-cosmic { background: var(--bg-color-cosmic); }
+
+/* Dinamik Renklerin Uygulanması */
+body { color: var(--current-text-color); }
+#simulation-container { background-color: var(--current-container-bg); }
+#info-panel { background: var(--current-panel-bg); }
+.value { color: var(--current-accent-color); }
+#milestones-container h2 { border-bottom-color: var(--current-accent-color); }
+#milestone-list { border-left-color: var(--current-list-border); }
+#milestone-list li.reached { color: var(--current-milestone-color); }
+#milestone-list li.reached::before { color: var(--current-milestone-color); }
+header h1 {
+    color: #ff6f61; /* Sabit mercan */
+    transition: color var(--transition-speed) ease-in-out;
+}
+
+/* --- Yıldız Efekti (::before) --- */
+body.bg-space-entry::before,
+body.bg-space-moon::before,
+body.bg-interplanetary::before,
+body.bg-interstellar::before,
+body.bg-galactic::before,
+body.bg-cosmic::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: radial-gradient(white 0.5px, transparent 0.5px),
+                      radial-gradient(white 0.5px, transparent 0.5px);
+    background-size: 50px 50px, 90px 90px;
+    background-position: 0 0, 45px 45px;
+    z-index: -2;
+    opacity: 0.15;
+    animation: twinkle 25s infinite linear alternate;
+    pointer-events: none;
+}
+@keyframes twinkle {
+  from { background-position: 0 0, 45px 45px; opacity: 0.1; }
+  to   { background-position: -120px 90px, -75px 135px; opacity: 0.2; }
+}
+body.bg-cosmic::before {
+    background-image: radial-gradient(white 0.4px, transparent 0.4px),
+                      radial-gradient(white 0.4px, transparent 0.4px);
+    background-size: 150px 150px, 250px 250px;
+    background-position: 0 0, 75px 75px;
+    opacity: 0.08;
+    animation: twinkle 40s infinite linear alternate;
+}
+
+
+/* --- Özel Arka Plan Efektleri (::after) --- */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 1.5s ease-in-out, background 1.5s ease-in-out;
+    background: transparent;
+}
+/* Genel Efektler */
+body.bg-space-moon:not(.reached-mars):not(.reached-jupiter):not(.reached-neptune)::after,
+body.reached-moon::after {
+    background: radial-gradient(ellipse at 50% 150%, rgba(230, 230, 240, 0.35) 0%, rgba(230, 230, 240, 0.1) 30%, transparent 70%);
+    opacity: 1;
+}
+body.bg-interplanetary:not(.reached-mars):not(.reached-jupiter):not(.reached-neptune)::after {
+     background: radial-gradient(ellipse at 10% 10%, rgba(255, 220, 150, 0.3) 0%, rgba(255, 180, 100, 0.1) 25%, transparent 60%);
+    opacity: 1;
+}
+body.bg-galactic:not(.reached-heliopause)::after,
+body.reached-galaxy-disk::after {
+    background:
+        radial-gradient(ellipse at 70% 60%, rgba(180, 150, 220, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 40%, rgba(150, 180, 220, 0.08) 0%, transparent 50%),
+        linear-gradient(115deg, transparent 20%, rgba(220, 220, 235, 0.12) 40%, rgba(220, 220, 235, 0.15) 50%, rgba(220, 220, 235, 0.12) 60%, transparent 80%);
+    opacity: 1;
+}
+body.bg-cosmic::after { opacity: 0; }
+
+/* --- Gezegene/Özel Noktaya Özgü Efektler --- */
+body.reached-mars::after {
+    background: radial-gradient(ellipse at 80% 70%, rgba(220, 120, 80, 0.25) 0%, rgba(180, 80, 50, 0.1) 35%, transparent 70%);
+    opacity: 0.8;
+}
+body.reached-jupiter::after {
+    background:
+        linear-gradient(rgba(210, 180, 140, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(210, 180, 140, 0.05) 1px, transparent 1px),
+        radial-gradient(ellipse at 50% 50%, rgba(222, 184, 135, 0.25) 0%, rgba(205, 133, 63, 0.15) 40%, transparent 75%);
+    background-size: 100px 100px, 100px 100px, 100% 100%;
+    opacity: 0.9;
+}
+body.reached-neptune::after {
+    background: radial-gradient(ellipse at 20% 30%, rgba(80, 120, 200, 0.3) 0%, rgba(30, 60, 150, 0.15) 40%, transparent 75%);
+    opacity: 0.85;
+}
+body.reached-heliopause::after {
+     background: repeating-radial-gradient(circle at -20% 120%, rgba(150, 180, 255, 0.0) 0, rgba(150, 180, 255, 0.08) 10%, rgba(150, 180, 255, 0.0) 20%);
+    opacity: 0.7;
+    animation: pulse 10s infinite ease-in-out alternate;
+}
+@keyframes pulse {
+    from { transform: scale(1); opacity: 0.6; }
+    to { transform: scale(1.05); opacity: 0.8; }
+}
+
+/* --- Ana İçerik Stilleri --- */
+#simulation-container {
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: background-color var(--transition-speed) ease-in-out,
+                box-shadow var(--transition-speed) ease-in-out;
+    z-index: 1;
+    position: relative;
+}
+
+header p {
+    margin-bottom: 30px;
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+#paper-container {
+    perspective: 1000px;
+    margin-bottom: 30px;
+    min-height: 150px; /* Yüksekliği animasyon için ayarla */
+    display: flex;      /* Kağıdı ortalamak için */
+    justify-content: center;
+    align-items: center;
+}
+
+#paper {
+    position: relative;
+    width: 200px;
+    height: 140px;
+    background-color: var(--paper-color);
+    margin: 0 auto;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: box-shadow var(--animation-speed) ease-out; /* Transform geçişini kaldır */
+    overflow: hidden;
+    will-change: transform, width, height; /* Animasyon optimizasyonu */
+    transform-style: preserve-3d; /* 3D animasyonlar için */
+}
+#paper:hover {
+    /* Hover efektini transform yerine box-shadow ile yapalım */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Katlama Çizgileri */
+.fold-line-horizontal,
+.fold-line-vertical {
+    position: absolute;
+    background-color: var(--paper-fold-line-color);
+    transition: background-color var(--animation-speed) ease-out,
+                opacity var(--animation-speed) ease-out;
+    opacity: 0; /* Başlangıçta gizli */
+    z-index: 1;
+}
+
+.fold-line-horizontal {
+    left: 50%; top: 0; bottom: 0;
+    width: 1px;
+    transform: translateX(-50%);
+}
+.fold-line-vertical {
+    top: 50%; left: 0; right: 0;
+    height: 1px;
+    transform: translateY(-50%);
+}
+
+/* Gösterilecek katlama çizgisini belirle */
+#paper.show-horizontal-line .fold-line-horizontal,
+#paper.show-vertical-line .fold-line-vertical {
+    opacity: 1; /* Aktif çizgiyi göster */
+}
+
+/* Kalıcı kat izleri (ilk katlamadan sonra) */
+#paper.folded-visual .fold-line-horizontal {
+    width: 2px; /* Kat izini biraz kalınlaştır */
+    background-color: var(--paper-fold-crease-color);
+     opacity: 1; /* Sürekli görünür yap */
+}
+#paper.folded-visual .fold-line-vertical {
+    height: 2px; /* Kat izini biraz kalınlaştır */
+    background-color: var(--paper-fold-crease-color);
+     opacity: 1; /* Sürekli görünür yap */
+}
+
+/* Katlama Animasyonları */
+#paper.folding-horizontal {
+    animation: fold-effect-horizontal var(--animation-speed) ease-in-out;
+}
+#paper.folding-vertical {
+    animation: fold-effect-vertical var(--animation-speed) ease-in-out;
+}
+
+@keyframes fold-effect-horizontal {
+    0% { transform: scaleX(1) scaleY(1) rotateY(0deg); background-color: var(--paper-color); }
+    50% { transform: scaleX(0.1) scaleY(0.95) rotateY(15deg); background-color: var(--paper-fold-animation-color); box-shadow: 0 2px 5px rgba(0,0,0, 0.3); }
+    100% { transform: scaleX(1) scaleY(1) rotateY(0deg); background-color: var(--paper-color); }
+}
+
+@keyframes fold-effect-vertical {
+    0% { transform: scaleY(1) scaleX(1) rotateX(0deg); background-color: var(--paper-color); }
+    50% { transform: scaleY(0.1) scaleX(0.95) rotateX(-15deg); background-color: var(--paper-fold-animation-color); box-shadow: 0 2px 5px rgba(0,0,0, 0.3); }
+    100% { transform: scaleY(1) scaleX(1) rotateX(0deg); background-color: var(--paper-color); }
+}
+
+
+/* Aktif animasyon sırasında katlama çizgisini vurgula */
+#paper.folding-horizontal .fold-line-horizontal {
+     width: 6px; background-color: rgba(0, 0, 0, 0.3); opacity: 1;
+}
+#paper.folding-vertical .fold-line-vertical {
+     height: 6px; background-color: rgba(0, 0, 0, 0.3); opacity: 1;
+}
+
+
+#info-panel {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    padding: 15px;
+    border-radius: 8px;
+    transition: background-color var(--transition-speed) ease-in-out;
+}
+.info-item { text-align: center; }
+.label { display: block; font-size: 0.9em; opacity: 0.8; margin-bottom: 5px; }
+.value { font-size: 1.4em; font-weight: 600; transition: color var(--transition-speed) ease-in-out; }
+
+#milestones-container {
+    margin-top: 20px;
+    text-align: left;
+}
+#milestones-container h2 {
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    display: inline-block;
+    border-bottom: 2px solid var(--current-accent-color);
+    transition: border-bottom-color var(--transition-speed) ease-in-out;
+}
+#milestone-list {
+    list-style: none;
+    padding-left: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-left: 15px;
+    border-left: 3px solid var(--current-list-border);
+    transition: border-left-color var(--transition-speed) ease-in-out;
+}
+#milestone-list li {
+    padding: 8px 0;
+    opacity: 0.7;
+    transition: opacity 0.5s ease, transform 0.5s ease, color 0.5s ease;
+    font-size: 0.95em;
+}
+#milestone-list li.reached {
+    opacity: 1;
+    font-weight: 600;
+    transform: translateX(5px);
+    transition: color var(--transition-speed) ease-in-out, opacity 0.5s ease, transform 0.5s ease;
+}
+#milestone-list li.reached::before {
+    content: "✓ ";
+    font-weight: bold;
+    margin-right: 5px;
+    transition: color var(--transition-speed) ease-in-out;
+}
+#milestone-list li.milestone-initial { font-style: italic; opacity: 0.6; }
+
+footer { margin-top: 40px; font-size: 0.85em; opacity: 0.7; }
+
+/* --- Müzik Butonu Stilleri --- */
+#play-music-button {
+    position: fixed; /* Sayfaya göre sabit */
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background-color: rgba(255, 255, 255, 0.2); /* Yarı saydam */
+    /* Başlangıç rengi açık tema veya dinamik değişken */
+    color: var(--current-text-color, var(--text-color-light-bg));
+    border: 1px solid var(--current-list-border, var(--list-border-light));
+    border-radius: 50%; /* Daire */
+    font-size: 1.5em; /* İkon boyutu */
+    line-height: 1; /* Dikey hizalama için */
+    padding: 0; /* Ekstra padding'i kaldır */
+    padding-bottom: 2px; /* Play ikonunu biraz aşağı kaydır (fonta bağlı) */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100; /* Diğer öğelerin üzerinde */
+    /* Geçişlere dinamik renk değişkenlerini de ekle */
+    transition: background-color 0.3s ease,
+                color var(--transition-speed) ease-in-out,
+                border-color var(--transition-speed) ease-in-out,
+                box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    user-select: none; /* Buton metni seçilemesin */
+}
+
+#play-music-button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+#play-music-button:active {
+     background-color: rgba(255, 255, 255, 0.5);
+     transform: scale(0.95); /* Hafif tıklama efekti */
+}
+
+/* Dinamik renk geçişi için butonun rengini/borderını güncelle */
+body.bg-space-entry #play-music-button,
+body.bg-space-moon #play-music-button,
+body.bg-interplanetary #play-music-button,
+body.bg-interstellar #play-music-button,
+body.bg-galactic #play-music-button,
+body.bg-cosmic #play-music-button {
+     color: var(--text-color-dark-bg);
+     border-color: var(--list-border-dark);
+     background-color: rgba(30, 30, 50, 0.3); /* Koyu temada biraz farklı arka plan */
+}
+body.bg-space-entry #play-music-button:hover,
+body.bg-space-moon #play-music-button:hover,
+body.bg-interplanetary #play-music-button:hover,
+body.bg-interstellar #play-music-button:hover,
+body.bg-galactic #play-music-button:hover,
+body.bg-cosmic #play-music-button:hover {
+     background-color: rgba(50, 50, 80, 0.5);
+}
+
+/* --- Mobil Cihazlar --- */
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    #simulation-container { padding: 20px; }
+    header h1 { font-size: 1.6em; }
+    header p { font-size: 1em; }
+    #paper { width: 160px; height: 112px; }
+    #paper-container { min-height: 120px; }
+
+    /* Mobil için keyframe'ler aynı kalabilir, kağıt boyutu zaten farklı */
+
+    #info-panel { flex-direction: column; gap: 15px; }
+    .value { font-size: 1.3em; }
+    #milestone-list { max-height: 200px; }
+
+    /* Mobil için müzik butonu */
+    #play-music-button {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.3em;
+    }
+}

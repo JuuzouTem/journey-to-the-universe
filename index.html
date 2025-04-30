@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnteraktif Kağıt Katlama Simülasyonu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Müzik Oynatıcı Eklendi -->
+    <button id="play-music-button" title="Müziği Oynat/Durdur">►</button>
+    <audio id="background-music" src="music/rises_the_moon.mp3" loop></audio>
+    <!-- Müzik Oynatıcı Sonu -->
+
+    <div id="simulation-container">
+        <header>
+            <h1>Kağıt Katlama: Evrene Yolculuk</h1>
+            <p>Bir kağıt parçasını teorik olarak sınırsız katlayabilseydik nereye ulaşırdık?</p>
+        </header>
+
+        <main>
+            <div id="paper-container">
+                <div id="paper" title="Katlamak için tıkla!">
+                    <!-- Kağıt görseli CSS ile yapılacak -->
+                     <!-- fold-line div kaldırıldı, CSS'te .fold-line-horizontal/vertical kullanılıyor -->
+                     <div class="fold-line-horizontal"></div>
+                     <div class="fold-line-vertical"></div>
+                </div>
+            </div>
+
+            <div id="info-panel">
+                <div class="info-item">
+                    <span class="label">Katlama Sayısı:</span>
+                    <span id="fold-count" class="value">0</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Mevcut Kalınlık:</span>
+                    <span id="thickness-display" class="value">0.1 mm</span>
+                </div>
+            </div>
+
+            <div id="milestones-container">
+                <h2>Ulaşılan Dönüm Noktaları:</h2>
+                <ul id="milestone-list">
+                    <!-- Dönüm noktaları buraya eklenecek -->
+                    <li class="milestone-initial">Başlamak için kağıda tıklayın...</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>Başlangıç kalınlığı: 0.1 mm. Her katlamada kalınlık ikiye katlanır.</p>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
